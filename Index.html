@@ -85,7 +85,6 @@
     .row-preview{margin:0 24px 24px}.row-preview h3{font-size:16px}.row-preview .muted{margin:4px 0 12px;color:var(--muted);font-size:13px}.row-preview .table-scroll{border:1px solid var(--line);border-radius:12px}
     @media(max-width:600px){.manual-tools,.xl-preview,.row-preview{margin-left:12px;margin-right:12px}}
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" type="text/javascript"></script>
   <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js" type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" type="text/javascript"></script>
@@ -112,7 +111,7 @@
     <aside id="sidebar" data-template-id="side-panel" class="canva-sidebar sidebar" style="background: rgb(18, 50, 74);">
      <p data-template-id="side-heading" class="canva-text side-heading" style="color: rgb(169, 203, 217); font-weight: 800; font-style: normal; font-size: 14px;">NAVIGASI DATA</p>
      <nav class="side-nav" aria-label="Navigasi dashboard">
-      <button type="button" class="nav-item active" data-destination="home" aria-current="page"><i data-lucide="house" aria-hidden="true"></i><span data-template-id="nav-home" class="canva-text" style="color: rgb(212, 229, 237); font-weight: 400; font-style: normal; font-size: 14px;">Beranda</span></button> <a class="nav-item" href="https://bapperida.jogjaprov.go.id/dataku/sdgs" target="_blank" rel="noopener noreferrer"><i data-lucide="globe-2" aria-hidden="true"></i><span data-template-id="nav-sdgs" class="canva-text" style="color: rgb(212, 229, 237); font-weight: 400; font-style: normal; font-size: 14px;">SDGs ↗</span></a> <button type="button" class="nav-item" data-destination="opd"><i data-lucide="bar-chart-3" aria-hidden="true"></i><span data-template-id="nav-opd" class="canva-text" style="color: rgb(212, 229, 237); font-weight: 400; font-style: normal; font-size: 14px;">Indikator Kinerja OPD</span></button> <button type="button" class="nav-item" data-destination="master"><i data-lucide="database" aria-hidden="true"></i><span data-template-id="nav-master" class="canva-text" style="color: rgb(255, 255, 255); font-weight: 400; font-style: normal; font-size: 14px;">Master Data</span></button>
+      <button type="button" class="nav-item active" data-destination="home" aria-current="page"><i data-lucide="house" aria-hidden="true"></i><span data-template-id="nav-home" class="canva-text" style="color: rgb(212, 229, 237); font-weight: 400; font-style: normal; font-size: 14px;">Beranda</span></button> <button type="button" class="nav-item" data-destination="master"><i data-lucide="database" aria-hidden="true"></i><span data-template-id="nav-master" class="canva-text" style="color: rgb(255, 255, 255); font-weight: 400; font-style: normal; font-size: 14px;">Master Data</span></button>
       <div class="side-divider" aria-hidden="true"></div>
       <p data-template-id="group-heading" class="canva-text side-heading" style="color: rgb(169, 203, 217); font-weight: 800; font-style: normal; font-size: 14px;">BIDANG &amp; UNIT</p>
       <div id="field-groups"></div>
@@ -126,8 +125,8 @@
        <div>
         <span class="chip"><i data-lucide="leaf" aria-hidden="true"></i>Dinas Lingkungan Hidup dan Kehutanan DIY</span>
         <h1 id="page-title">Dashboard Data Lingkungan Hidup &amp; Kehutanan</h1>
-        <p>Pantau kesiapan data setiap bidang dan unit, buka spreadsheet sumber, dan lihat indikator kinerja dalam satu tampilan.</p>
-        <div class="hero2-actions"><button class="button gold" type="button" data-goto="master"><i data-lucide="database" aria-hidden="true"></i>Buka Master Data</button><button class="button ghost" type="button" data-goto="opd"><i data-lucide="bar-chart-3" aria-hidden="true"></i>Indikator Kinerja</button></div>
+        <p>Pantau kesiapan data setiap bidang dan unit, dan buka spreadsheet sumber dalam satu tampilan.</p>
+        <div class="hero2-actions"><button class="button gold" type="button" data-goto="master"><i data-lucide="database" aria-hidden="true"></i>Buka Master Data</button></div>
         <p class="hero2-sync"><i data-lucide="refresh-cw" aria-hidden="true"></i><span id="last-sync">Memuat data…</span></p>
        </div>
        <div class="hero2-art" aria-hidden="true">
@@ -162,102 +161,6 @@
       <div class="actions"><button id="retry" data-template-id="retry-button" class="canva-button button secondary" type="button" style="background: rgb(255, 255, 255); color: rgb(18, 100, 148); font-weight: 700; font-style: normal; font-size: 14px;">Coba lagi</button>
       </div>
      </aside>
-     <section id="opd" data-page="opd" data-template-id="opd-panel" class="canva-panel panel" aria-labelledby="opd-title" style="background: rgb(255, 255, 255);">
-      <div class="opd-heading">
-       <p data-template-id="opd-kicker" class="canva-text kicker" style="color: rgb(24, 116, 95); font-weight: 800; font-style: normal; font-size: 14px;">INDIKATOR KINERJA DAERAH</p>
-       <h2 id="opd-title" data-template-id="opd-title" class="canva-text" style="color: rgb(23, 59, 89); font-weight: 800; font-style: normal; font-size: 21px;">Indikator Kinerja Daerah Istimewa Yogyakarta</h2>
-       <p data-template-id="opd-subtitle" class="canva-text" style="color: rgb(82, 109, 128); font-weight: 400; font-style: normal; font-size: 14px;">DINAS LINGKUNGAN HIDUP DAN KEHUTANAN · Periode 2022–2027</p>
-       <p data-template-id="opd-source" class="canva-text" style="color: rgb(82, 109, 128); font-weight: 400; font-style: normal; font-size: 14px;">Belum ada dokumen indikator yang diunggah. Pilih PDF untuk mengisi modul.</p>
-       <p data-template-id="opd-separation-note" class="canva-text opd-separation-note" style="color: rgb(18, 107, 66); font-weight: 700; font-style: normal; font-size: 14px;">Data indikator dari PDF ditampilkan terpisah dan tidak mengubah Master Data.</p>
-      </div>
-      <div id="opd-update-status" class="notice" role="status" aria-live="polite" hidden=""></div>
-      <div class="opd-summary">
-       <article data-template-id="opd-period-card" class="canva-card opd-stat" style="background: rgb(245, 249, 248);"><span data-template-id="opd-period-label" class="canva-text" style="color: rgb(82, 109, 128); font-weight: 700; font-style: normal; font-size: 14px;">Periode dokumen</span><strong id="opd-period-value">Belum tersedia</strong>
-       </article>
-       <article data-template-id="opd-goals-card" class="canva-card opd-stat" style="background: rgb(245, 249, 248);"><span data-template-id="opd-goals-label" class="canva-text" style="color: rgb(82, 109, 128); font-weight: 700; font-style: normal; font-size: 14px;">Sasaran dalam dokumen</span><strong id="opd-goals-value">Belum tersedia</strong>
-       </article>
-       <article data-template-id="opd-indicators-card" class="canva-card opd-stat" style="background: rgb(245, 249, 248);"><span data-template-id="opd-indicators-label" class="canva-text" style="color: rgb(82, 109, 128); font-weight: 700; font-style: normal; font-size: 14px;">Indikator dalam dokumen</span><strong id="opd-indicators-value">Belum tersedia</strong>
-       </article>
-      </div>
-      <div class="filters opd-filters">
-       <div class="field"><label data-template-id="opd-year-label" class="canva-text" for="opd-year" style="color: rgb(41, 72, 95); font-weight: 700; font-style: normal; font-size: 14px;">Tahun tampilan</label><select id="opd-year"><option>2022</option><option>2023</option><option>2024</option><option>2025</option><option>2026</option><option>2027</option></select>
-       </div>
-       <div class="field wide"><label data-template-id="opd-search-label" class="canva-text" for="opd-search" style="color: rgb(41, 72, 95); font-weight: 700; font-style: normal; font-size: 14px;">Cari indikator atau sasaran</label><input id="opd-search" data-template-id="opd-search-input" class="canva-input" type="search" placeholder="Ketik kata kunci…" style="font-weight: 400; font-style: normal; font-size: 14px;">
-       </div>
-       <div class="field"><label data-template-id="opd-goal-label" class="canva-text" for="opd-goal" style="color: rgb(41, 72, 95); font-weight: 700; font-style: normal; font-size: 14px;">Filter sasaran</label><select id="opd-goal"><option value="">Semua sasaran</option><option value="62">No 62</option><option value="63">No 63</option><option value="64">No 64</option></select>
-       </div><span id="opd-count" class="filter-count" aria-live="polite"></span>
-      </div>
-      <div class="table-scroll">
-       <table class="opd-table">
-        <thead>
-         <tr>
-          <th scope="col">No</th>
-          <th scope="col">Sasaran</th>
-          <th scope="col">Indikator</th>
-          <th scope="col">Meta</th>
-         </tr>
-        </thead>
-        <tbody id="opd-body"></tbody>
-       </table>
-       <div id="opd-empty" class="empty"><strong>Belum ada dokumen indikator yang diunggah</strong><span>Pilih PDF indikator kinerja untuk mengisi tabel ini secara otomatis.</span>
-       </div>
-      </div>
-      <section class="document-area" aria-labelledby="upload-title">
-       <p data-template-id="upload-kicker" class="canva-text kicker" style="color: rgb(24, 116, 95); font-weight: 800; font-style: normal; font-size: 14px;">DOKUMEN OPD</p>
-       <h3 id="upload-title" data-template-id="upload-title" class="canva-text" style="color: rgb(23, 59, 89); font-weight: 800; font-style: normal; font-size: 16px;">Upload Dokumen Indikator Kinerja</h3>
-       <p data-template-id="upload-description" class="canva-text" style="color: rgb(82, 109, 128); font-weight: 400; font-style: normal; font-size: 14px;">Pilih PDF untuk ditinjau sebelum disimpan sementara di halaman ini.</p>
-       <div data-template-id="upload-box" class="canva-card upload-box" style="background: rgb(244, 250, 248);">
-        <div class="upload-top">
-         <div>
-          <span id="upload-status" class="status-pill" role="status" aria-live="polite">Belum ada file</span>
-          <p data-template-id="upload-hint" class="canva-text" style="margin: 9px 0px 0px; color: rgb(82, 109, 128); font-size: 14px; font-weight: 400; font-style: normal;">Hanya file PDF (.pdf) yang diterima.</p>
-         </div>
-         <div>
-          <input id="pdf-file" class="file-input" type="file" accept="application/pdf,.pdf" aria-label="Pilih dokumen indikator kinerja dalam format PDF"> <label id="pick-label" for="pdf-file" class="button primary" tabindex="0"><i data-lucide="upload" aria-hidden="true"></i><span data-template-id="pick-text" class="canva-text" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 14px;">Unggah PDF untuk Pembaruan</span></label>
-         </div>
-        </div>
-        <p id="upload-error" class="error" role="alert" hidden=""></p>
-        <form id="manual-row-form" class="manual-form" hidden="">
-         <div class="field">
-          <label for="manual-no">No</label><input id="manual-no" type="text">
-         </div>
-         <div class="field">
-          <label for="manual-goal">Sasaran</label><input id="manual-goal" type="text">
-         </div>
-         <div class="field wide">
-          <label for="manual-indicator">Indikator</label><input id="manual-indicator" type="text" required="">
-         </div>
-         <div class="field wide">
-          <label for="manual-meta">Meta</label><input id="manual-meta" type="text">
-         </div><button class="button secondary" type="submit">Tambah baris</button>
-        </form>
-        <div id="pending-details" hidden="">
-         <div class="file-info"><strong id="pending-name"></strong>
-          <p id="pending-size"></p>
-          <p id="pending-date"></p>
-          <p id="pending-validation"></p>
-         </div><object id="pending-preview" class="preview" type="application/pdf" aria-label="Pratinjau dokumen PDF" hidden=""></object>
-         <p id="preview-fallback" class="small-note" hidden="">Pratinjau tidak tersedia pada browser ini. Gunakan Lihat PDF setelah menyimpan.</p>
-         <div class="actions"><button id="replace-file" data-template-id="replace-button" class="canva-button button secondary" type="button" style="background: rgb(255, 255, 255); color: rgb(18, 100, 148); font-weight: 700; font-style: normal; font-size: 14px;">Ganti File</button><button id="remove-file" data-template-id="remove-button" class="canva-button button danger" type="button" style="background: rgb(255, 255, 255); color: rgb(154, 51, 51); font-weight: 700; font-style: normal; font-size: 14px;">Hapus Pilihan</button><button id="save-file" data-template-id="save-button" class="canva-button button primary" type="button" style="background: rgb(18, 100, 148); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 14px;">Simpan dan Perbarui</button>
-         </div>
-        </div>
-        <div id="replace-confirm" class="confirm-box" hidden="" role="group" aria-label="Konfirmasi penggantian dokumen">
-         <p data-template-id="replace-confirm-text" class="canva-text" style="color: rgb(112, 83, 29); font-weight: 400; font-style: normal; font-size: 14px;">Ganti dokumen yang sedang dipilih? Pilihan saat ini akan dibuang setelah Anda memilih PDF pengganti.</p>
-         <div class="actions"><button id="confirm-replace" data-template-id="confirm-replace-button" class="canva-button button danger" type="button" style="background: rgb(255, 255, 255); color: rgb(154, 51, 51); font-weight: 700; font-style: normal; font-size: 14px;">Ya, Ganti File</button><button id="cancel-replace" data-template-id="cancel-replace-button" class="canva-button button secondary" type="button" style="background: rgb(255, 255, 255); color: rgb(18, 100, 148); font-weight: 700; font-style: normal; font-size: 14px;">Batal</button>
-         </div>
-        </div>
-       </div>
-       <article id="saved-card" data-template-id="saved-card" class="canva-card saved-card" hidden="" style="background: rgb(255, 255, 255);">
-        <h3 data-template-id="saved-title" class="canva-text" style="color: rgb(23, 59, 89); font-weight: 800; font-style: normal; font-size: 16px;">Dokumen Indikator Kinerja</h3><span data-template-id="saved-status" class="canva-tag status-pill saved" style="background: rgb(223, 243, 232); color: rgb(18, 107, 66); font-weight: 700; font-style: normal; font-size: 14px;">File tersimpan</span>
-        <p id="saved-name"></p>
-        <p id="saved-meta"></p>
-        <div class="actions"><button id="reload-pdf" data-template-id="reload-button" class="canva-button button secondary" type="button" style="background: rgb(255, 255, 255); color: rgb(18, 100, 148); font-weight: 700; font-style: normal; font-size: 14px;">Perbarui dari PDF</button><button id="view-pdf" data-template-id="view-button" class="canva-button button primary" type="button" style="background: rgb(18, 100, 148); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 14px;">Lihat PDF</button><button id="download-pdf" data-template-id="download-button" class="canva-button button secondary" type="button" style="background: rgb(255, 255, 255); color: rgb(18, 100, 148); font-weight: 700; font-style: normal; font-size: 14px;">Unduh PDF</button><button id="delete-pdf" data-template-id="delete-button" class="canva-button button danger" type="button" style="background: rgb(255, 255, 255); color: rgb(154, 51, 51); font-weight: 700; font-style: normal; font-size: 14px;">Hapus Dokumen Aktif</button>
-        </div>
-       </article>
-       <p data-template-id="storage-note" class="canva-text small-note" style="color: rgb(88, 112, 134); font-weight: 400; font-style: normal; font-size: 14px;">File hanya tersedia selama halaman ini terbuka. Memuat ulang halaman akan menghapus pilihan dan dokumen yang disimpan sementara.</p>
-       <p data-template-id="security-note" class="canva-text small-note" style="color: rgb(88, 112, 134); font-weight: 400; font-style: normal; font-size: 14px;">Catatan: penyimpanan permanen dan pembatasan akses admin memerlukan backend serta autentikasi server.</p>
-      </section>
-     </section>
      <section id="submenu" data-page="submenu" class="panel viewer-panel page-hidden" aria-labelledby="submenu-title">
       <div class="viewer-head">
        <div><p id="submenu-kicker" class="kicker"></p><h2 id="submenu-title"></h2><p id="submenu-note">Pilih subbab untuk melihat data.</p></div>
@@ -460,11 +363,9 @@
       "Dokumen RPHJP Balai KPH Yogyakarta",
       "Dokumen RPHJPd Balai KPH Yogyakarta"
     ]],
-    ["Sub Bagian Keuangan",[
+    ["Sekretariat",[
       "Rekapitulasi PAD",
-      "Laporan Keuangan Audited"
-    ]],
-    ["Sub Bagian Umum",[
+      "Laporan Keuangan Audited",
       "Jumlah Pengajuan Informasi",
       "Jumlah Perizinan Magang",
       "Jumlah Pemohon Data",
@@ -540,7 +441,7 @@
   }
   function closeSidebar(){$("sidebar").classList.remove("open");$("mobile-toggle").setAttribute("aria-expanded","false");$("mobile-toggle").setAttribute("aria-label","Buka navigasi")}
   $("mobile-toggle").addEventListener("click",()=>{let open=$("sidebar").classList.toggle("open");$("mobile-toggle").setAttribute("aria-expanded",String(open));$("mobile-toggle").setAttribute("aria-label",open?"Tutup navigasi":"Buka navigasi")});
-  const PAGE_LABELS={home:"Beranda",master:"Master Data",opd:"Indikator Kinerja OPD",submenu:"Bidang & Unit"};
+  const PAGE_LABELS={home:"Beranda",master:"Master Data",submenu:"Bidang & Unit"};
   function renderPage(page){
     activePage=page;
     document.querySelectorAll("[data-page]").forEach(sec=>sec.classList.toggle("page-hidden",sec.dataset.page!==page));
@@ -553,7 +454,6 @@
     activeTerm="";document.querySelectorAll(".group-item").forEach(n=>n.classList.remove("active"));
     renderPage(el.dataset.destination||"home");
     if(el.dataset.destination==="master")ensureMasterFrame();
-    if(el.dataset.destination==="opd")renderOpd();
     closeSidebar();
   }));
   renderPage("home");
@@ -589,7 +489,7 @@
     });
     return {columns:names,rows:out};
   }
-  function groupMatches(sheetName,title){const x=norm(sheetName),y=norm(title);return !!x&&(x===y||x.includes("("+y+")"))}
+  function groupMatches(sheetName,title){const x=norm(sheetName),y=norm(title);return !!x&&(x===y||x.includes("("+y+")")||x.startsWith(y+" "))}
   // ---- Beranda ----
   function renderHome(){
     const total=rows.length,c={oke:0,perbaiki:0,none:0,lain:0},groups=new Map();
@@ -618,7 +518,7 @@
     $("sidebar").classList.add("open");$("mobile-toggle").setAttribute("aria-expanded","true");
     toggle.scrollIntoView({block:"center",behavior:"smooth"});toggle.classList.add("pulse");setTimeout(()=>toggle.classList.remove("pulse"),1600);
   }
-  document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>{const d=b.dataset.goto;renderPage(d);if(d==="master")ensureMasterFrame();if(d==="opd")renderOpd();closeSidebar()}));
+  document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>{const d=b.dataset.goto;renderPage(d);if(d==="master")ensureMasterFrame();closeSidebar()}));
   // ---- Master Data ----
   function ensureMasterFrame(force){const f=$("master-frame");if(force||!f.getAttribute("src"))f.src=MASTER_VIEW}
   $("master-reload").addEventListener("click",()=>ensureMasterFrame(true));
@@ -728,9 +628,8 @@
     ["Jumlah Polisi Kehutanan","f1cveWBxJTXNLdXUH4z0OGigbYrLEhskEV"],
     ["Dokumen RPHJP Balai KPH Yogyakarta","f1c5YrCiYM2bL8oKYLE5wlDYQIVDOnYgiW"],
     ["Dokumen RPHJPd Balai KPH Yogyakarta","f1chKmymgz70bK6GVZINq_Ssw6JoRvSABw"]],
-   [ // Sub Bagian Keuangan
-    ["Laporan Keuangan Audited","r1oxuFCu7uptpd8VS78g6Jwh-sc036FsaN"]],
-   [ // Sub Bagian Umum
+   [ // Sekretariat (Keuangan + Umum)
+    ["Laporan Keuangan Audited","r1oxuFCu7uptpd8VS78g6Jwh-sc036FsaN"],
     ["Jumlah Pengajuan Informasi","s1U_OB8lXUfLC1vLKGel0z7SSdD3uuBn-w:o"],
     ["Jumlah Pengaduan","r1kSKhT4gL7Fh-6Dti6Z0AucLsZQe2Ptpb"],
     ["Jumlah Pengendali Ekosistem Hutan (PEH)","r1fSrjPNTiRwl_jyaojC7m5_z8GzhpWSqa"],
@@ -1036,108 +935,7 @@
   }
   $("refresh").addEventListener("click",refresh);$("retry").addEventListener("click",refresh);
 
-  const initialKinerjaRows=[
-    {key:"kinerja-62-1",no:"62",goal:"Meningkatnya Tata Kelola Penyelenggaraan Urusan Pemerintahan di Perangkat Daerah",indicator:"Kategori Reformasi Birokrasi Perangkat Daerah; AA=1 (Skor >100); A=2 (>80 s.d 100); BB=3 (>70-80); B=4 (>60-70); CC=5 (>50-60); C=6 (>30-50)",meta:"Kategori Reformasi Birokrasi Perangkat Daerah"},
-    {key:"kinerja-63-1",no:"63",goal:"Tercapainya perlindungan dan pengelolaan lingkungan hidup",indicator:"Persentase ketaatan penanggung jawab usaha dan/atau kegiatan terhadap izin lingkungan, izin PPLH dan PUU LH yang diterbitkan oleh Provinsi",meta:"Jumlah penanggung jawab usaha dan/atau kegiatan yang taat dibandingkan dengan jumlah pengawasan yang dilakukan"},
-    {key:"kinerja-63-2",no:"63",goal:"Tercapainya perlindungan dan pengelolaan lingkungan hidup",indicator:"Nilai indeks pencemaran sungai lintas kab/kota",meta:"Nilai Indeks Pencemaran Sungai Lintas Kabupaten/Kota pada tahun n"},
-    {key:"kinerja-64-1",no:"64",goal:"Terwujudnya pengelolaan hutan lestari",indicator:"Peningkatan jumlah produksi sektor kehutanan",meta:"Persentase kenaikan produksi pada tahun n dibandingkan dengan produksi tahun n-1"},
-    {key:"kinerja-64-2",no:"64",goal:"Terwujudnya pengelolaan hutan lestari",indicator:"Persentase luas lahan kritis yang direhabilitasi di DIY",meta:"Luas lahan kritis yang tertangani sampai dengan tahun N dibagi dengan luas sasaran lahan kritis"}
-  ];
-  let activeKinerjaRows=initialKinerjaRows;
-  let activeKinerjaDocument={name:"Indikator Kinerja Daerah Istimewa Yogyakarta.pdf",size:0};
-  let kinerjaStatus="active",kinerjaError="",kinerjaUpdatedAt=new Date();
-  const opdState={file:null,metadata:null,text:"",rows:activeKinerjaRows,period:"2022–2027",status:"active",error:""};
-  let opdData=opdState.rows;
-  let opdDocumentActive=false;
-  let activePdfName="", activePdfDate=null;
-  function updateOpdStatus(message,kind=""){
-    const box=$("opd-update-status");box.textContent=message;box.className="notice "+kind;box.hidden=!message;
-  }
-  function renderOpd(){
-    const q=$("opd-search").value.trim().toLocaleLowerCase("id"),goal=$("opd-goal").value;
-    const source=activeKinerjaRows;
-    const list=source.filter(item=>(!goal||String(item.no)===goal)&&(!q||`${item.goal||""} ${item.indicator||""} ${item.meta||""}`.toLocaleLowerCase("id").includes(q)));
-    const hasRows=source.length>0;
-    $("opd-empty").hidden=hasRows;
-    $("opd-period-value").textContent=hasRows?(opdState.period||"Semua tahun"):"Belum tersedia";
-    $("opd-goals-value").textContent=hasRows?(new Set(source.map(item=>item.no).filter(Boolean)).size||"Belum tersedia"):"Belum tersedia";
-    $("opd-indicators-value").textContent=hasRows?source.length:"Belum tersedia";
-    const frag=document.createDocumentFragment();
-    list.forEach(item=>{const tr=document.createElement("tr");[item.no,item.goal,item.indicator,item.meta].forEach(text=>{const td=document.createElement("td");td.textContent=text||"Belum tersedia";tr.append(td)});frag.append(tr)});
-    $("opd-body").replaceChildren(frag);
-    $("opd-count").textContent=`${list.length} dari ${source.length} indikator · Tahun ${$("opd-year").value||"Semua"}`;
-  }
-  ["opd-search","opd-goal","opd-year"].forEach(id=>$(id).addEventListener(id==="opd-search"?"input":"change",renderOpd));
-  renderOpd();
-
-  // Dokumen hanya disimpan dalam memori halaman; tidak ada klaim penyimpanan server.
-  let pending=null,saved=null,pendingUrl=null,savedUrl=null,replacing=false;
   const dateText=date=>new Intl.DateTimeFormat("id-ID",{dateStyle:"medium",timeStyle:"short"}).format(date);
-  const sizeText=size=>size<1048576?`${(size/1024).toLocaleString("id-ID",{maximumFractionDigits:1})} KB`:`${(size/1048576).toLocaleString("id-ID",{maximumFractionDigits:2})} MB`;
-  function status(text,kind){$("upload-status").textContent=text;$("upload-status").className="status-pill "+(kind||"")}
-  function errorMessage(message){$("upload-error").textContent=message;$("upload-error").hidden=!message}
-  function renderPending(){
-    $("pending-details").hidden=!pending;
-    if(pending){
-      $("pending-name").textContent=pending.file.name;$("pending-size").textContent="Ukuran: "+sizeText(pending.file.size);
-      $("pending-date").textContent="Dipilih: "+dateText(pending.date);$("pending-validation").textContent="Validasi: PDF valid";
-      $("pending-preview").hidden=!navigator.pdfViewerEnabled;
-      $("preview-fallback").hidden=!!navigator.pdfViewerEnabled;
-      if(navigator.pdfViewerEnabled)$("pending-preview").data=pendingUrl;
-      status("File siap disimpan","ready");
-    }else status(saved?"File tersimpan":"Belum ada file",saved?"saved":"");
-  }
-  function releasePending(){if(pendingUrl)URL.revokeObjectURL(pendingUrl);pendingUrl=null;pending=null;$("pending-preview").removeAttribute("data");renderPending()}
-  function acceptFile(file){
-    if(!file)return;
-    if(!/\.pdf$/i.test(file.name)||file.type!=="application/pdf"){errorMessage("Format tidak sesuai. Pilih file berekstensi .pdf dengan tipe PDF (application/pdf).");$("pdf-file").value="";return}
-    errorMessage("");updateOpdStatus("Membaca PDF…");releasePending();pending={file,date:new Date()};pendingUrl=URL.createObjectURL(file);renderPending();$("pdf-file").value="";
-  }
-  function requestReplacement(){if(pending){replacing=true;$("replace-confirm").hidden=false;$("confirm-replace").focus()}else $("pdf-file").click()}
-  $("pdf-file").addEventListener("change",e=>{const file=e.target.files?.[0];if(!file)return;if(pending&&!replacing){$("pdf-file").value="";requestReplacement();return}replacing=false;acceptFile(file)});
-  $("pick-label").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pending?requestReplacement():$("pdf-file").click()}});
-  $("pick-label").addEventListener("click",e=>{if(pending){e.preventDefault();requestReplacement()}});
-  $("replace-file").addEventListener("click",requestReplacement);
-  $("confirm-replace").addEventListener("click",()=>{$("replace-confirm").hidden=true;replacing=true;$("pdf-file").click()});
-  $("cancel-replace").addEventListener("click",()=>{$("replace-confirm").hidden=true;replacing=false;$("replace-file").focus()});
-  $("remove-file").addEventListener("click",()=>{releasePending();errorMessage("");$("replace-confirm").hidden=true;replacing=false});
-  async function readPdf(file){
-    if(!window.pdfjsLib) return {text:"",message:"PDF berhasil diunggah, tetapi data belum dapat dibaca otomatis. Silakan periksa format PDF atau lakukan pemetaan manual."};
-    const pdf=await window.pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise, parts=[];
-    for(let pageNo=1;pageNo<=pdf.numPages;pageNo++){
-      const page=await pdf.getPage(pageNo), content=await page.getTextContent();
-      parts.push(content.items.map(item=>item.str).join(" "));
-    }
-    return {text:parts.join("\n")};
-  }
-  function mapPdfRows(text){
-    const lines=text.split(/\n+/).map(s=>s.replace(/\s+/g," ").trim()).filter(Boolean), result=[];
-    let currentNo="", currentGoal="", currentIndicator="", currentMeta="";
-    const flush=()=>{if(currentIndicator)result.push({no:currentNo||"Belum tersedia",goal:currentGoal||"Belum tersedia",indicator:currentIndicator,meta:currentMeta||"Belum tersedia"});currentIndicator="";currentMeta=""};
-    lines.forEach(line=>{const match=line.match(/^(\d{1,3})\s+(.*)$/);if(match){flush();currentNo=match[1];currentGoal="";currentIndicator=match[2];return}if(/^(sasaran|tujuan)\b/i.test(line)){currentGoal=line.replace(/^(sasaran|tujuan)\s*[:\-]?\s*/i,"");return}if(/^(meta|target|satuan|realisasi|status|capaian)\b/i.test(line)){currentMeta+=(currentMeta?" ":"")+line;return}if(currentIndicator)currentIndicator+=" "+line});flush();return result.filter(row=>row.indicator.length>3)}
-  async function processDocument(file){
-    if(!file)throw new Error("Pilih file PDF terlebih dahulu.");
-    const result=await readPdf(file), mapped=result.text?mapPdfRows(result.text):[];
-    if(!result.text||!mapped.length){
-      opdState.error="PDF terunggah, tetapi teks/tabel indikator tidak dapat dibaca otomatis. Master Data tetap tidak terpengaruh. Gunakan PDF berbasis teks atau masukkan data secara manual.";
-      $("manual-row-form").hidden=false;opdState.rows=[];activeKinerjaRows=[];opdData=opdState.rows;renderOpd();return opdState.error;
-    }
-    activeKinerjaRows=mapped.map((row,i)=>({...row,key:`kinerja-pdf-${Date.now()}-${i}`}));
-    activeKinerjaDocument={name:file.name,size:file.size};kinerjaUpdatedAt=new Date();kinerjaStatus="active";kinerjaError="";
-    opdState.file=file;opdState.metadata={name:file.name,size:file.size,updatedAt:kinerjaUpdatedAt.toISOString()};opdState.text=result.text;opdState.rows=activeKinerjaRows;opdState.period="2022–2027";opdState.status="active";opdState.error="";
-    $("manual-row-form").hidden=true;opdData=opdState.rows;opdDocumentActive=true;renderOpd();return "";
-  }
-  $("save-file").addEventListener("click",async()=>{
-    if(!pending)return;const button=$("save-file");button.disabled=true;updateOpdStatus("Membaca PDF…");
-    try{const chosen=pending.file;updateOpdStatus("Memperbarui dashboard…");const message=await processDocument(chosen);if(message){updateOpdStatus(message);errorMessage(message);return}if(savedUrl)URL.revokeObjectURL(savedUrl);saved=pending;savedUrl=pendingUrl;pending=null;pendingUrl=null;$("pending-preview").removeAttribute("data");renderPending();$("saved-card").hidden=false;$("saved-name").textContent=saved.file.name;$("saved-meta").textContent=`${sizeText(saved.file.size)} · Diperbarui ${dateText(new Date())} · Aktif di halaman ini`;activePdfName=saved.file.name;activePdfDate=new Date();updateOpdStatus(`Data indikator berhasil diperbarui · ${new Set(opdData.map(item=>item.no)).size} sasaran · ${opdData.length} indikator. Master Data tidak terpengaruh oleh pembaruan PDF.`,"saved");$("opd-source").textContent=`Sumber indikator aktif: ${activePdfName} · diperbarui ${dateText(activePdfDate)} · terpisah dari Master Data.`;$("pdf-file").value="";errorMessage("")}catch(error){opdState.error=error.message||"Terjadi kesalahan saat membaca PDF.";updateOpdStatus(opdState.error);renderOpd()}finally{$("pdf-file").value="";button.disabled=false}
-  });
-  $("manual-row-form").addEventListener("submit",event=>{event.preventDefault();const indicator=$("manual-indicator").value.trim();if(!indicator){errorMessage("Isi indikator sebelum menambahkan baris.");return}activeKinerjaRows=[...activeKinerjaRows,{key:`kinerja-manual-${Date.now()}`,no:$("manual-no").value.trim()||"Belum tersedia",goal:$("manual-goal").value.trim()||"Belum tersedia",indicator,meta:$("manual-meta").value.trim()||"Belum tersedia"}];opdState.rows=activeKinerjaRows;opdState.status="active";opdState.period=$("opd-year").value||"Semua tahun";opdState.error="";opdData=opdState.rows;renderOpd();updateOpdStatus(`Baris manual ditambahkan · ${opdState.rows.length} baris terdeteksi.`,"saved");event.target.reset()});
-  $("reload-pdf").addEventListener("click",async()=>{if(saved?.file){updateOpdStatus("Membaca PDF…");const message=await processDocument(saved.file);updateOpdStatus(message||`Data indikator berhasil diperbarui · ${opdState.rows.length} baris terdeteksi. Master Data tidak terpengaruh.`,message?"":"saved")}});
-  $("delete-pdf").addEventListener("click",()=>{if(!saved)return;revokeSaved();saved=null;opdState.file=null;opdState.metadata=null;opdState.text="";activeKinerjaRows=initialKinerjaRows;opdState.rows=activeKinerjaRows;opdState.period="2022–2027";opdState.status="active";opdState.error="";opdData=activeKinerjaRows;opdDocumentActive=false;$("saved-card").hidden=true;$("opd-source").textContent="Belum ada dokumen indikator yang diunggah.";renderPending();renderOpd();updateOpdStatus("")});
-  function revokeSaved(){if(savedUrl)URL.revokeObjectURL(savedUrl);savedUrl=null}
-  $("view-pdf").addEventListener("click",()=>{if(savedUrl)window.open(savedUrl,"_blank","noopener,noreferrer")});
-  $("download-pdf").addEventListener("click",()=>{if(!savedUrl)return;const a=document.createElement("a");a.href=savedUrl;a.download=saved.file.name;document.body.append(a);a.click();a.remove()});
-  window.addEventListener("pagehide",()=>{if(pendingUrl)URL.revokeObjectURL(pendingUrl);if(savedUrl)URL.revokeObjectURL(savedUrl)});
   if(window.lucide)lucide.createIcons();
   (function(){const a=$("master-open");if(a)a.href=`https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/edit?gid=${CONFIG.SHEET_GID}#gid=${CONFIG.SHEET_GID}`})();
   refresh();
