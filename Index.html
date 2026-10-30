@@ -420,6 +420,8 @@
       .bar-item:nth-child(1){animation-delay:.15s}.bar-item:nth-child(2){animation-delay:.19s}.bar-item:nth-child(3){animation-delay:.23s}.bar-item:nth-child(4){animation-delay:.27s}.bar-item:nth-child(5){animation-delay:.31s}.bar-item:nth-child(n+6){animation-delay:.35s}
       .bar-track i{animation-duration:.6s;animation-delay:.3s}
     }
+    /* Jarak kartu status sambungan dengan pratinjau (panel pengaturan sudah dihapus) */
+    .conn-card{margin-bottom:14px}
   </style>
   <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js" type="text/javascript" defer></script>
@@ -595,7 +597,7 @@
   <script>
   /* PETA ISI SKRIP
      1. Login & pencatatan akses      4. Navigasi & sidebar        7. Sinkronisasi Google Sheets
-     2. Konfigurasi sumber data       5. Beranda (KPI, donat, bar) 8. Pengaturan sumber data
+     2. Konfigurasi sumber data       5. Beranda (KPI, donat, bar) 8. Penyegaran & jadwal
      3. Daftar tautan bawaan (SRC_MAP) 6. Penampil dokumen          9. Mulai aplikasi (startApp) */
   const $ = id => document.getElementById(id);
   /* ================= LOGIN & PENCATATAN AKSES =================
@@ -674,12 +676,12 @@
   document.addEventListener("DOMContentLoaded",()=>{if(window.lucide)lucide.createIcons()});
   /* ================= KONFIGURASI SUMBER DATA =================
    APPS_SCRIPT_URL : URL Web App Google Apps Script (lihat PANDUAN-SETUP.md). Jalur paling stabil.
-                     Bisa juga ditempel lewat panel "Pengaturan sumber data" di halaman Master Data.
+                     Hanya bisa diubah di kode ini (tidak ada lagi panel pengaturan di halaman), agar tautan sumber tidak berubah-ubah.
    SHEET_ID / GID  : ID & gid Google Sheets (dipakai untuk tombol buka, pratinjau, dan jalur cadangan).
    PUBLISHED_CSV   : (opsional) URL hasil File > Bagikan > Publikasikan ke web > CSV. */
   const CONFIG={APPS_SCRIPT_URL:"https://script.google.com/macros/s/AKfycbyfcMYygdcT7b7ZZm8gvlo0Pms6W3uj7c66t-Gzs8dAGb35htAjtH5xF6Fe3MpUl_jyJQ/exec",SHEET_ID:"1pU3IVPuz9nSgXjybWOSiof56IoqvFuhYX7S8NFKInrg",SHEET_GID:"1524886877",PUBLISHED_CSV:"",POLL_MS:60000,TIMEOUT_MS:20000};
-  const CFG_KEY="dlhk-source-config";
-  try{const c=JSON.parse(localStorage.getItem(CFG_KEY)||"{}");["APPS_SCRIPT_URL","SHEET_ID","PUBLISHED_CSV"].forEach(k=>{if(typeof c[k]==="string"&&c[k].trim())CONFIG[k]=c[k].trim()})}catch{}
+  // Bersihkan sisa pengaturan lama yang pernah disimpan di browser; sumber data kini hanya dari CONFIG di atas.
+  try{localStorage.removeItem("dlhk-source-config")}catch{}
   const ENDPOINT = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/export?format=csv&gid=${CONFIG.SHEET_GID}`;
   let columns=[], rows=[], loaded=false, activeTerm="", statusIndex=-1, yearIndex=-1;
   let loadingSheet=false, sheetError="", lastSheetSync=null, selectedBidangBalai="";
@@ -889,30 +891,41 @@
   if(actGroup)host.querySelectorAll(".group-item").forEach(b=>{if(b.dataset.group===actGroup&&b.textContent===actLabel)b.classList.add("active")});
   }
   buildSidebar();
-  // Sinkronkan daftar Bidang & Unit di menu samping dengan isi Google Sheets (bidang/uraian baru ikut muncul)
+  // ===== Bidang & Unit mengikuti spreadsheet (tidak permanen) =====
+  // Nama, urutan, dan isi tiap bidang/unit diambil dari kolom "Bidang/Balai" & "Uraian Data" di Google Sheets.
+  // Diganti nama / ditambah / dihapus di spreadsheet → menu ikut berubah pada penyegaran berikutnya (otomatis tiap 60 detik).
+  // BASE_GROUPS hanya cadangan saat spreadsheet belum bisa dimuat sama sekali.
+  // HIDE_GROUPS: (opsional) nama bidang/unit yang ingin disembunyikan walau masih ada di spreadsheet, persis seperti tertulis di sheet.
+  const HIDE_GROUPS=[];
+  // Indeks kelompok bawaan yang sepadan (untuk daftar tautan bawaan SRC_MAP). Bidang yang diganti nama dikenali dari kemiripan isinya.
+  function baseIndexFor(title,items){
+    let i=BASE_GROUPS.findIndex(([t])=>groupMatches(title,t)||norm(t)===norm(title));
+    if(i>=0)return i;
+    const labels=new Set(items.map(it=>norm(typeof it==="string"?it:it.label)));
+    let best=-1,score=1;
+    BASE_GROUPS.forEach(([,bi],k)=>{const n=bi.reduce((a,it)=>a+(labels.has(norm(typeof it==="string"?it:it.label))?1:0),0);if(n>score){score=n;best=k}});
+    return best;
+  }
   function syncGroups(){
-    const next=BASE_GROUPS.map(([t,items])=>[t,items.slice()]);
-    const byGroup=new Map();
+    const order=[],map=new Map();
     rows.forEach(r=>{
-      const g=cell(r,"Bidang/Balai");if(!g)return;
-      let idx=next.findIndex(([t])=>groupMatches(g,t));
-      if(idx<0){next.push([g,[]]);idx=next.length-1}
-      if(!byGroup.has(idx))byGroup.set(idx,[]);byGroup.get(idx).push(r);
+      const g=squash(cell(r,"Bidang/Balai"));if(!g)return;
+      let o=map.get(norm(g));if(!o){o={title:g,items:[],seen:new Set()};map.set(norm(g),o);order.push(o)}
+      const lines=String(cell(r,"Uraian Data")).split("\n").map(squash).filter(Boolean);if(!lines.length)return;
+      const label=lines[0].replace(/^-\s*/,""),k=norm(label);if(!label||o.seen.has(k))return;o.seen.add(k);
+      const kids=lines.slice(1).filter(x=>/^-/.test(x)).map(x=>x.replace(/^-\s*/,"")).filter(Boolean);
+      o.items.push(kids.length?{label,children:kids}:label);
     });
-    byGroup.forEach((list,idx)=>{
-      const [title,items]=next[idx],matched=new Set(),mark=(label,child)=>findSubmenuRows(title,label,child).forEach(r=>matched.add(r));
-      items.forEach(it=>{if(typeof it==="string")mark(it,false);else{mark(it.label,false);(it.children||[]).forEach(c=>mark(c,true))}});
-      const seen=new Set();
-      list.forEach(r=>{
-        if(matched.has(r))return;
-        const label=squash(String(cell(r,"Uraian Data")).split("\n")[0]).replace(/^-\s*/,"");
-        if(!label||seen.has(norm(label)))return;
-        seen.add(norm(label));items.push(label);
-      });
-    });
-    const sig=JSON.stringify(next);
-    if(sig===groupsSig)return;
+    const hidden=HIDE_GROUPS.map(norm);
+    const next=order.filter(o=>o.items.length&&!hidden.some(h=>h===norm(o.title)||groupMatches(o.title,h))).map(o=>[o.title,o.items,baseIndexFor(o.title,o.items)]);
+    if(!next.length)return; // data sheet kosong/tidak terbaca → pertahankan daftar yang sedang tampil
+    const sig=JSON.stringify(next);if(sig===groupsSig)return;
     groupsSig=sig;fieldGroups=next;buildSidebar();
+    // Jika bidang/uraian yang sedang dibuka sudah tidak ada di spreadsheet, kembali ke Beranda
+    if(submenuRef){
+      const g=fieldGroups.find(x=>x[0]===submenuRef.group),has=g&&g[1].some(it=>typeof it==="string"?it===submenuRef.label:(it.label===submenuRef.label||(it.children||[]).includes(submenuRef.label)));
+      if(!has){submenuRef=null;selectedSubmenu="";if(activePage==="submenu")renderPage("home")}
+    }
   }
   function closeSidebar(){$("sidebar").classList.remove("open");$("mobile-toggle").setAttribute("aria-expanded","false");$("mobile-toggle").setAttribute("aria-label","Buka navigasi")}
   $("mobile-toggle").addEventListener("click",()=>{let open=$("sidebar").classList.toggle("open");$("mobile-toggle").setAttribute("aria-expanded",String(open));$("mobile-toggle").setAttribute("aria-label",open?"Tutup navigasi":"Buka navigasi")});
@@ -1118,7 +1131,7 @@
     if(t==="f")return `https://drive.google.com/file/d/${id}/view?usp=sharing`;
     return `https://drive.google.com/drive/folders/${id}?usp=sharing`;
   }
-  function staticFor(label,group){const gi=fieldGroups.findIndex(g=>g[0]===group),k=norm(label),hit=(SRC_MAP[gi]||[]).find(e=>[].concat(e[0]).some(n=>norm(n)===k));return hit?hit.slice(1).map(decodeSpec):[]}
+  function staticFor(label,group){const fg=fieldGroups.find(g=>g[0]===group),gi=fg&&typeof fg[2]==="number"?fg[2]:BASE_GROUPS.findIndex(g=>g[0]===group),k=norm(label),hit=(SRC_MAP[gi]||[]).find(e=>[].concat(e[0]).some(n=>norm(n)===k));return hit?hit.slice(1).map(decodeSpec):[]}
   // Pratinjau: berkas Office (rtpof=true) dicoba lewat penampil Drive lebih dulu; tampilan alternatif tersedia lewat tombol
   function embedVariants(url){
     try{
@@ -1406,7 +1419,7 @@
     const t=document.createElement("strong");t.textContent=ok?"Tersambung ke Google Sheets":"Belum tersambung";
     const d=document.createElement("span");d.textContent=ok?`${syncInfo.rows.toLocaleString("id-ID")} baris data · ${MODE_LABEL[syncInfo.mode]} · ${dateText(syncInfo.at)}`:(message||"");
     const b=document.createElement("button");b.type="button";b.className="button secondary";b.textContent="Tes sambungan";b.addEventListener("click",refresh);
-    box.append(dot,t,d,b);renderSettings();
+    box.append(dot,t,d,b);
   }
   async function refresh(){
     if(loadingSheet)return;
@@ -1428,20 +1441,6 @@
       renderConn(false,loaded?"Refresh gagal; menampilkan data sinkronisasi terakhir. "+error.message:error.message+" — pratinjau memakai daftar tautan bawaan.");
       $("access-notice").hidden=false;if(activePage==="submenu")renderSubmenu();setStatus("error");
     }finally{loadingSheet=false}
-  }
-  // Panel pengaturan sumber data (disimpan di browser)
-  function renderSettings(){
-    const host=$("conn-card");if(!host||$("src-settings"))return;
-    const d=document.createElement("details");d.id="src-settings";d.style.cssText="flex-basis:100%;margin-top:6px";
-    const sm=document.createElement("summary");sm.textContent="Pengaturan sumber data";sm.style.cssText="cursor:pointer;font-weight:700;color:var(--blue)";d.append(sm);
-    const mk=(label,key,ph)=>{const w=document.createElement("label");w.style.cssText="display:block;margin-top:8px;font-size:12px";w.textContent=label;const i=document.createElement("input");i.type="text";i.placeholder=ph;i.value=CONFIG[key]||"";i.dataset.key=key;i.style.cssText="display:block;width:100%;margin-top:4px;padding:8px 10px;border:1px solid #a9c5d5;border-radius:8px;font-size:12px";w.append(i);return w};
-    d.append(mk("URL Web App Apps Script (…/exec) — disarankan","APPS_SCRIPT_URL","https://script.google.com/macros/s/XXXX/exec"),mk("ID Google Sheets (opsional)","SHEET_ID","1AbC…"),mk("URL CSV terpublikasi (opsional)","PUBLISHED_CSV","https://docs.google.com/spreadsheets/d/e/…/pub?output=csv"));
-    const row=document.createElement("div");row.style.cssText="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap";
-    const save=document.createElement("button");save.type="button";save.className="button primary";save.textContent="Simpan & sambungkan";
-    const reset=document.createElement("button");reset.type="button";reset.className="button secondary";reset.textContent="Reset";
-    save.addEventListener("click",()=>{const c={};d.querySelectorAll("input").forEach(i=>c[i.dataset.key]=i.value.trim());try{localStorage.setItem(CFG_KEY,JSON.stringify(c))}catch{}location.reload()});
-    reset.addEventListener("click",()=>{try{localStorage.removeItem(CFG_KEY);localStorage.removeItem("dlhk-sheet-cache")}catch{}location.reload()});
-    row.append(save,reset);d.append(row);host.parentNode.insertBefore(d,host.nextSibling);d.style.margin="8px 24px 0";
   }
   $("refresh").addEventListener("click",refresh);$("retry").addEventListener("click",refresh);
 
